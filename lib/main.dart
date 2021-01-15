@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guncel_altin/screens/home/home_screen.dart';
+import 'package:guncel_altin/screens/home_screen.dart';
 
 import 'constants.dart';
 
