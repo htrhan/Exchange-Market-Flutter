@@ -246,5 +246,6 @@ Future<Currency> getCurrency() async {
   String url = 'https://finans.truncgil.com/v2/today.json';
 
   final response = await http.get('$url');
-  return currencyFromJson(response.body);
+  String body = utf8.decode(response.bodyBytes);
+  return currencyFromJson(body);
 }
