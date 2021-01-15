@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:guncel_altin/screens/home/components/currency_money.dart';
+import 'package:guncel_altin/screens/components/currency_money.dart';
 
 class CustomButtonNavBar extends StatefulWidget {
   CustomButtonNavBar({Key key}) : super(key: key);
