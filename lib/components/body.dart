@@ -49,7 +49,7 @@ class CurrencyMoney extends StatelessWidget {
             Text(
               descMoney,
               style: TextStyle(
-                fontSize: 6,
+                fontSize: 10,
               ),
             ),
             Divider(height: 2, color: kPrimaryColor),
