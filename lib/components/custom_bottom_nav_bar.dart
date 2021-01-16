@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:guncel_altin/screens/components/converter.dart';
 import 'package:guncel_altin/screens/components/currency_money.dart';
 import 'package:guncel_altin/screens/components/gold_price.dart';
 
@@ -26,7 +27,9 @@ class _CustomButtonNavBarState extends State<CustomButtonNavBar> {
               Container(
                 child: GoldPrice(),
               ),
-              Container(color: Colors.yellow),
+              Container(
+                child: CurrencyConverter(),
+              ),
             ],
           ),
           bottomNavigationBar: SizedBox(
