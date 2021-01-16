@@ -23,9 +23,10 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
           appBar: AppBar(
             title: Text(
-              'Exchange Market',
+              'TURHANDÖVİZ',
               style: TextStyle(
-                color: Color(0xFF3A6187),
+                color: Colors.white,
+                fontSize: 16,
               ),
             ),
             centerTitle: true,

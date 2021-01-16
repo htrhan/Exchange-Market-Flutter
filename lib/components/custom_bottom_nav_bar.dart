@@ -28,7 +28,7 @@ class _CustomButtonNavBarState extends State<CustomButtonNavBar> {
                 child: GoldPrice(),
               ),
               Container(
-                child: CurrencyConverter(),
+                child: CurrencyConverterPage(),
               ),
             ],
           ),

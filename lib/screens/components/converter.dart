@@ -3,48 +3,52 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
-class CurrencyConverter extends StatefulWidget {
+import '../../constants.dart';
+
+class CurrencyConverterPage extends StatefulWidget {
   @override
-  _CurrencyConverterState createState() => _CurrencyConverterState();
+  _CurrencyConverterPageState createState() => _CurrencyConverterPageState();
 }
 
-class _CurrencyConverterState extends State<CurrencyConverter> {
-  final fromTextController = TextEditingController();
+class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
+  final userInput = TextEditingController();
   List<String> currencies;
-  String fromCurrency = "USD";
-  String toCurrency = "GBP";
+  String fromCurrency = "TRY";
+  String toCurrency = "USD";
   String result;
 
   @override
   void initState() {
     super.initState();
-    _loadCurrencies();
+    _getCurrencies();
   }
 
-  Future<String> _loadCurrencies() async {
-    String uri = "https://api.exchangeratesapi.io/latest";
+  Future<String> _getCurrencies() async {
+    String uri = "https://api.exchangeratesapi.io/latest?base=MXN";
     var response = await http
         .get(Uri.encodeFull(uri), headers: {"Accept": "application/json"});
     var responseBody = json.decode(response.body);
-    Map curMap = responseBody['rates'];
-    currencies = curMap.keys.toList();
-    setState(() {});
-    print(currencies);
+    Map currencyMap = responseBody['rates'];
+
+    setState(() {
+      currencies = currencyMap.keys.toList();
+    });
+    //print(currencies);
     return "Success";
   }
 
-  Future<String> _doConversion() async {
+  Future<String> _doConvert() async {
     String uri =
         "https://api.exchangeratesapi.io/latest?base=$fromCurrency&symbols=$toCurrency";
     var response = await http
         .get(Uri.encodeFull(uri), headers: {"Accept": "application/json"});
     var responseBody = json.decode(response.body);
     setState(() {
-      result = (double.parse(fromTextController.text) *
-              (responseBody["rates"][toCurrency]))
-          .toString();
+      result =
+          (double.parse(userInput.text) * (responseBody["rates"][toCurrency]))
+              .toStringAsFixed(2);
     });
-    print(result);
+    // print(result);
     return "Success";
   }
 
@@ -71,33 +75,62 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
-                  elevation: 5.0,
+                  elevation: 8.0,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      ListTile(
-                        title: TextField(
-                          controller: fromTextController,
-                          style: TextStyle(fontSize: 20.0, color: Colors.black),
-                          keyboardType:
-                              TextInputType.numberWithOptions(decimal: true),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 8.0,
+                          left: 8.0,
                         ),
-                        trailing: _buildDropDownButton(fromCurrency),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.arrow_downward),
-                        onPressed: _doConversion,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _dropDownMenu(fromCurrency),
+                            IconButton(
+                              icon: Icon(
+                                Icons.compare_arrows,
+                                size: 32,
+                                color: kTextColor,
+                              ),
+                              onPressed: _doConvert,
+                            ),
+                            _dropDownMenu(toCurrency),
+                          ],
+                        ),
                       ),
                       ListTile(
                         title: Chip(
                           label: result != null
                               ? Text(
                                   result,
-                                  style: Theme.of(context).textTheme.display1,
                                 )
                               : Text(""),
                         ),
-                        trailing: _buildDropDownButton(toCurrency),
+                      ),
+                      ListTile(
+                        title: TextField(
+                          onChanged: (result) {
+                            setState(() {
+                              _doConvert();
+                            });
+                          },
+                          decoration: const InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: kPrimaryColor, width: 1.0),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: kPrimaryColor, width: 2.0),
+                            ),
+                          ),
+                          controller: userInput,
+                          style: TextStyle(fontSize: 20.0, color: Colors.black),
+                          keyboardType:
+                              TextInputType.numberWithOptions(decimal: true),
+                        ),
                       ),
                     ],
                   ),
@@ -107,26 +140,34 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
     );
   }
 
-  Widget _buildDropDownButton(String currencyCategory) {
-    return DropdownButton(
-      value: currencyCategory,
-      items: currencies
-          .map((String value) => DropdownMenuItem(
-                value: value,
-                child: Row(
-                  children: <Widget>[
-                    Text(value),
-                  ],
-                ),
-              ))
-          .toList(),
-      onChanged: (String value) {
-        if (currencyCategory == fromCurrency) {
-          _onFromChanged(value);
-        } else {
-          _onToChanged(value);
-        }
-      },
+  Widget _dropDownMenu(String currencyCategory) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15.0),
+        border: Border.all(
+            color: kPrimaryColor, style: BorderStyle.solid, width: 0.80),
+      ),
+      child: DropdownButton(
+        value: currencyCategory,
+        items: currencies
+            .map((String value) => DropdownMenuItem(
+                  value: value,
+                  child: Row(
+                    children: <Widget>[
+                      Text(value),
+                    ],
+                  ),
+                ))
+            .toList(),
+        onChanged: (String value) {
+          if (currencyCategory == fromCurrency) {
+            _onFromChanged(value);
+          } else {
+            _onToChanged(value);
+          }
+        },
+      ),
     );
   }
 }
