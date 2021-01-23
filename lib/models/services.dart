@@ -247,5 +247,6 @@ Future<Currency> getCurrency() async {
 
   final response = await http.get('$url');
   String body = utf8.decode(response.bodyBytes);
+  print(body);
   return currencyFromJson(body);
 }
